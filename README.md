@@ -1,7 +1,7 @@
 # gin-generator
 
 #### 介绍
-💡 gin-generator🐔 可以快速把你建立起一个gin+GORM的项目
+💡 gin-generator🐔 可以快速帮你建立起一个gin+GORM的项目
 💡 包括自动生成数据库模型、service+DTO、controller、router的代码
 
 #### 软件架构
@@ -13,12 +13,12 @@
 
 #### 安装教程
 
-go install github.com/eddylee1010/gin-generator@latest
+`go install github.com/eddylee1010/gin-generator@latest`
 
 #### 使用说明
 
 1. gin-generator -h 获取帮助
 2. gin-generator version 查看当前版本号
 3. gin-generator gen 所有生成命令的父级命令
-   * gin-generator gen project 生成项目结构
+   * gin-generator gen config 生成cli工具所需配置文件
    * gin-generator gen model 创建数据库模型文件
