@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/eddylee1010/gin-generator/cmd"
+	_ "github.com/eddylee1010/gin-generator/cmd"
 )
 
 func main() {
@@ -25,5 +25,5 @@ func main() {
 	//	log.Fatalf("failed to render template: %v", err)
 	//}
 
-	cmd.Execute()
+	//cmd.Execute()
 }

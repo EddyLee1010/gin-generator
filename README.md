@@ -13,7 +13,7 @@
 
 #### 安装教程
 
-go install gitee.com/eddy87/gin-generator@latest
+go install github.com/eddylee1010/gin-generator@latest
 
 #### 使用说明
 

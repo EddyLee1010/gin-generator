@@ -2,9 +2,8 @@ package cmd
 
 import (
 	"fmt"
-	"os"
-
 	"github.com/spf13/cobra"
+	"os"
 )
 
 var rootCmd = &cobra.Command{
@@ -14,7 +13,14 @@ var rootCmd = &cobra.Command{
 💡 包括自动生成数据库模型、service+DTO、controller、router的代码`,
 }
 
-func Execute() {
+var genCmd = &cobra.Command{
+	Use:   "gen",
+	Short: "生成命令 🔑help 获取使用方法",
+}
+
+func init() {
+	rootCmd.AddCommand(genCmd)
+
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Println(err)
 		os.Exit(1)
