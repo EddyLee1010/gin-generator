@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/eddylee1010/gin-generator/generator"
 	"github.com/spf13/cobra"
 	"os"
 )
@@ -16,13 +17,19 @@ var rootCmd = &cobra.Command{
 var genCmd = &cobra.Command{
 	Use:   "gen",
 	Short: "生成命令 🔑help 获取使用方法",
+	PreRun: func(cmd *cobra.Command, args []string) {
+		err := generator.InitTemplates() // 预先初始化所有模板
+		if err != nil {
+			return
+		}
+	},
 }
 
 var versionCmd = &cobra.Command{
 	Use:   "version",
 	Short: "获取当前版本号",
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("v0.2.0")
+		fmt.Println("♨︎ v0.2.0")
 	},
 }
 
