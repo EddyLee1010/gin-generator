@@ -3,7 +3,6 @@ module github.com/eddy1010/gin-generator
 
 go 1.24
 
-
 require github.com/spf13/cobra v1.9.1
 
 require (

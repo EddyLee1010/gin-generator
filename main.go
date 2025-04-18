@@ -1,7 +1,7 @@
 package main
 
 import (
-	"gitee.com/eddy87/gin-generator/cmd"
+	"github.com/eddy1010/gin-generator/cmd"
 )
 
 func main() {
