@@ -22,7 +22,7 @@ var versionCmd = &cobra.Command{
 	Use:   "version",
 	Short: "获取当前版本号",
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("v0.1.0")
+		fmt.Println("v0.2.0")
 	},
 }
 
