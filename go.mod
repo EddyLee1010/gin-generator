@@ -1,5 +1,5 @@
 //module gin-generator
-module github.com/Eddy1010/gin-generator
+module github.com/eddy1010/gin-generator
 
 go 1.24
 
