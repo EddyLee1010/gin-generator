@@ -1,10 +1,10 @@
 package generator
 
 import (
+	"github.com/eddylee1010/gin-generator/templates"
 	"html/template"
 	"log/slog"
 	"os"
-	"path/filepath"
 )
 
 var (
@@ -16,27 +16,20 @@ var (
 // InitTemplates 初始化模板
 func InitTemplates() error {
 	var err error
-	RequestServiceTemplate, err = LoadTemplate("templates/service.tmpl")
+	//RequestServiceTemplate, err = LoadTemplate("templates/service.tmpl")
+	//if err != nil {
+	//	return err
+	//}
+	//DTOTemplate, err = LoadTemplate("templates/dto.tmpl")
+	//if err != nil {
+	//	return err
+	//}
+	MainTemplate, err = template.New("main").Parse(templates.MainTmplStr)
 	if err != nil {
-		return err
-	}
-	DTOTemplate, err = LoadTemplate("templates/dto.tmpl")
-	if err != nil {
-		return err
-	}
-	MainTemplate, err = LoadTemplate("templates/main.go.tmpl")
-	if err != nil {
+		slog.Error("Failed to Parse template", "error", err)
 		return err
 	}
 	return nil
-}
-
-func LoadTemplate(path string) (*template.Template, error) {
-	tmpl, err := template.New(filepath.Base(path)).ParseFiles(path)
-	if err != nil {
-		return nil, err
-	}
-	return tmpl, nil
 }
 
 // RenderTemplateToFile 将模板渲染并写入文件

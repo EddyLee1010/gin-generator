@@ -43,17 +43,11 @@ var genProjectCmd = &cobra.Command{
 	},
 }
 
+// 检查项目名是否合法
 func isValidProjectName(s string) bool {
 	// 检查是否以字母开头
 	if !('a' <= s[0] && s[0] <= 'z' || 'A' <= s[0] && s[0] <= 'Z') {
 		return false
-	}
-
-	// 检查是否只包含字母、数字和下划线
-	for _, c := range s {
-		if !('a' <= c && c <= 'z' || 'A' <= c && c <= 'Z' || '0' <= c && c <= '9' || c == '_') {
-			return false
-		}
 	}
 	return true
 }
@@ -88,14 +82,24 @@ func createProject(name string) {
 	}
 	slog.Info("🤡 Project created successfully!\n")
 
+	cmd := exec.Command("go", "mod", "init", name)
+	cmd.Dir = "./" // 设置工作目录为生成的项目目录
+	out, err := cmd.CombinedOutput()
+	if err != nil {
+		slog.Error("❌ 执行 go mod init 失败", "err", err, "output", string(out))
+	} else {
+		slog.Info("✅ go mod 创建成功")
+	}
+
 	// 执行 go mod tidy todo 将来可自行替换使用位置
-	cmd := exec.Command("go", "mod", "tidy")
+	cmd = exec.Command("go", "mod", "tidy")
 	cmd.Dir = "./" // 设置工作目录为生成的项目目录
 
-	out, err := cmd.CombinedOutput()
+	out, err = cmd.CombinedOutput()
 	if err != nil {
 		slog.Error("❌ 执行 go mod tidy 失败", "err", err, "output", string(out))
 	} else {
 		slog.Info("✅ go mod tidy 成功")
 	}
+
 }
