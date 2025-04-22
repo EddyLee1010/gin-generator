@@ -7,10 +7,25 @@ import (
 	"os"
 )
 
+// TemplateConfigData 模板配置结构体，cli使用。不是用户项目数据
+type TemplateConfigData struct {
+	ProjectName string
+	Port        int
+	Database    struct {
+		DBHost     string
+		DBPort     string
+		DBUser     string
+		DBPassword string
+		DBName     string
+	}
+}
+
 var (
 	RequestServiceTemplate *template.Template
 	DTOTemplate            *template.Template
 	MainTemplate           *template.Template // main.go模版
+	ConfigTemplate         *template.Template
+	ConfigFileTemplate     *template.Template
 )
 
 // InitTemplates 初始化模板
@@ -27,6 +42,14 @@ func InitTemplates() error {
 	MainTemplate, err = template.New("main").Parse(templates.MainTmplStr)
 	if err != nil {
 		slog.Error("Failed to Parse template", "error", err)
+		return err
+	}
+	ConfigTemplate, err = template.New("config").Parse(templates.ConfigTemplateStr)
+	if err != nil {
+		return err
+	}
+	ConfigFileTemplate, err = template.New("config.yaml").Parse(templates.ConfigFileTemplateStr)
+	if err != nil {
 		return err
 	}
 	return nil

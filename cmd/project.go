@@ -31,6 +31,7 @@ var genProjectCmd = &cobra.Command{
 			slog.Error("❌ 请使用gin-generator gen config生成工具所需的配置文件，再次尝试")
 			return
 		}
+
 		// 检查项目名是否合法
 		if !isValidProjectName(viper.GetString("project_name")) {
 			slog.Error("Invalid project name. Project name must be a valid Go package name.")
@@ -75,9 +76,43 @@ func createProject(name string) {
 		}
 	}
 	// 渲染输出main.go
-	err := generator.RenderTemplateToFile(generator.MainTemplate, nil, "main.go")
+	var mainConfigMap = map[string]any{
+		"ProjectName": "github.com/eddylee1010/gin-generator",
+	}
+	err := generator.RenderTemplateToFile(generator.MainTemplate, mainConfigMap, "main.go")
 	if err != nil {
 		fmt.Println("❌ 创建 main.go 失败:", err)
+		return
+	}
+
+	// 2 生成配置文件config.yaml
+	// 2.1自定义配置文件数据
+	data := generator.TemplateConfigData{
+		ProjectName: name,
+		Port:        8080,
+		Database: struct {
+			DBHost     string
+			DBPort     string
+			DBUser     string
+			DBPassword string
+			DBName     string
+		}{
+			DBHost:     "127.0.0.1",
+			DBPort:     "3306",
+			DBUser:     "root",
+			DBPassword: "root",
+			DBName:     "test",
+		},
+	}
+	err = generator.RenderTemplateToFile(generator.ConfigFileTemplate, data, "config.yaml")
+	if err != nil {
+		fmt.Println("❌ 创建 config.yaml 失败:", err)
+		return
+	}
+	// 3. 生成Config的结构体
+	err = generator.RenderTemplateToFile(generator.ConfigTemplate, nil, "config/Config.go")
+	if err != nil {
+		fmt.Println("❌ 创建 config/Config.go 失败:", err)
 		return
 	}
 	slog.Info("🤡 Project created successfully!\n")

@@ -14,9 +14,15 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
+	"{{.ProjectName}}/config"
+	"log"
 )
 
 func main() {
+	if err := config.LoadConfig("config.yaml"); err != nil {
+		log.Fatalf("Failed to load config: %v", err)
+	}
+
 	r := gin.Default()
 	r.GET("/", func(c *gin.Context) {
 		c.JSON(200, gin.H{"message": "Hello from gin-generator!"})
