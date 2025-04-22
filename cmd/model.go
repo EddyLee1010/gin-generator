@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"fmt"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"gorm.io/driver/mysql"
@@ -15,9 +16,23 @@ var dsn string
 var genModelCmd = &cobra.Command{
 	Use:   "model",
 	Short: "😘 Generate GORM models from an existing database 😄",
+	PreRunE: func(cmd *cobra.Command, args []string) error {
+		if _, err := os.Stat("gen-config.yaml"); os.IsNotExist(err) {
+			slog.Error("❌ 请使用gin-generator gen config生成工具所需的配置文件，再次尝试")
+			return err
+		}
+		viper.SetConfigFile("gen-config.yaml")
+		err := viper.ReadInConfig()
+		if err != nil {
+			return err
+		}
+		return nil
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		generateModelsFromConfig()
 	},
+	SilenceErrors: true,
+	SilenceUsage:  true,
 }
 
 func init() {
@@ -26,19 +41,11 @@ func init() {
 }
 
 func generateModelsFromConfig() {
-	viper.SetConfigFile("gen-config.yaml")
-	err := viper.ReadInConfig()
-	if err != nil {
-		slog.Error("❌ Failed to read config:", err)
-		slog.Error("❌ 请使用gin-generator gen config生成工具所需的配置文件，再次尝试")
-		return
-	}
 
 	dsn = viper.GetString("database.dsn")
-	slog.Debug("🚀 Connecting to DB...", dsn)
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
-		slog.Error("❌ Failed to connect DB:", err)
+		fmt.Print("❌ 连接数据错误，请正确修改gen-config.yaml中数据库的配置")
 		return
 	}
 

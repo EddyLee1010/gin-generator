@@ -39,6 +39,9 @@ func createDefaultConfig() {
 #
 #	Author: Eddy 527084800
 
+## 🈲🈲🈲🈲 请勿将此文件提交至项目！ 使用 git rm gen-config.yaml --cache 命令从git管理库中移除
+## ❗️此文件为cli生成所需配置，config.yaml为生成项目运行配置文件，注意区分
+
 project_name: my-gin-project
 
 database:
