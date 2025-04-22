@@ -1,10 +1,14 @@
 package cmd
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/eddylee1010/gin-generator/generator"
 	"github.com/spf13/cobra"
+	"log/slog"
+	"net/http"
 	"os"
+	"time"
 )
 
 var rootCmd = &cobra.Command{
@@ -25,14 +29,47 @@ var genCmd = &cobra.Command{
 	},
 }
 
+// 获取版本号子命令
 var versionCmd = &cobra.Command{
 	Use:   "version",
 	Short: "获取当前版本号",
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("♨︎ v0.2.0")
+		// 使用http请求获取GitHub上的版本号
+		releaseInfo, err := getLatestRelease("eddylee1010", "gin-generator")
+		if err != nil {
+			slog.Error("获取版本号失败")
+			return
+		}
+		fmt.Printf("🫆当前版本号:%s\n", releaseInfo.TagName)
+		fmt.Printf("🤕发布时间:%s\n", releaseInfo.PublishedAt.Local().Format("2006-01-02 15:04:05"))
+		fmt.Printf("😆更新详情:%s\n", releaseInfo.HtmlUrl)
 	},
 }
 
+type GitHubRelease struct {
+	TagName     string    `json:"tag_name"`
+	PublishedAt time.Time `json:"published_at"`
+	HtmlUrl     string    `json:"html_url"`
+}
+
+func getLatestRelease(owner, repo string) (GitHubRelease, error) {
+	var release GitHubRelease
+	url := fmt.Sprintf("https://api.github.com/repos/%s/%s/releases/latest", owner, repo)
+	resp, err := http.Get(url)
+	if err != nil {
+		return GitHubRelease{}, err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return GitHubRelease{}, fmt.Errorf("GitHub API returned status: %s", resp.Status)
+	}
+
+	if err := json.NewDecoder(resp.Body).Decode(&release); err != nil {
+		return GitHubRelease{}, err
+	}
+	return release, nil
+}
 func init() {
 	rootCmd.AddCommand(genCmd) // 添加gen子命令
 	rootCmd.AddCommand(versionCmd)
