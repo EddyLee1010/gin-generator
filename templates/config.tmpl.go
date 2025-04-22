@@ -13,6 +13,11 @@ const ConfigTemplateStr = `//     ######   #### ##    ##          ######   #####
 
 package config
 
+import (
+	"github.com/spf13/viper"
+	"log/slog"
+)
+
 type Config struct {
 	AppName string ` + "`yaml:\"app_name\"`" + `
 	Port    int    ` + "`yaml:\"port\"`" + `

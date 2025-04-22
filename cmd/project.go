@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"errors"
 	"fmt"
 	"github.com/eddylee1010/gin-generator/generator"
 	"github.com/spf13/cobra"
@@ -11,37 +12,33 @@ import (
 )
 
 var genProjectCmd = &cobra.Command{
-	Use:     "project",
-	Short:   "创建项目基础目录结构",
-	Example: "gin-generator new myapp",
-	Long: `Create a new Gin + GORM project with the following directory structure:
-
-	.
-	├── cmd
-	├── config
-	├── controller
-	└── router
-	`,
-	PreRun: func(cmd *cobra.Command, args []string) {
-		generator.InitTemplates()
+	Use:   "project",
+	Short: "创建项目基础目录结构",
+	PreRunE: func(cmd *cobra.Command, args []string) error {
+		if _, err := os.Stat("gen-config.yaml"); os.IsNotExist(err) {
+			slog.Error("❌ 请使用gin-generator gen config生成工具所需的配置文件，再次尝试")
+			return err
+		}
 		viper.SetConfigFile("gen-config.yaml")
 		err := viper.ReadInConfig()
 		if err != nil {
-			slog.Error("❌ Failed to read config:", err)
-			slog.Error("❌ 请使用gin-generator gen config生成工具所需的配置文件，再次尝试")
-			return
+			return err
 		}
 
 		// 检查项目名是否合法
 		if !isValidProjectName(viper.GetString("project_name")) {
 			slog.Error("Invalid project name. Project name must be a valid Go package name.")
-			os.Exit(1)
+			return errors.New("❌项目名无效")
 		}
+		return nil
 	},
 
 	Run: func(cmd *cobra.Command, args []string) {
+		generator.InitTemplates()
 		createProject(viper.GetString("project_name"))
 	},
+	SilenceErrors: true, // 不打印错误信息
+	SilenceUsage:  true, // 不打印 usage 帮助
 }
 
 // 检查项目名是否合法
@@ -68,7 +65,7 @@ func createProject(name string) {
 	for _, dir := range dirs {
 
 		if _, err := os.Stat(dir); err == nil {
-			slog.Warn("❌ 项目目录已存在，禁止覆盖！", "path", dir)
+			slog.Warn("⚠️ 项目目录已存在，禁止覆盖！", "path", dir)
 			continue
 		}
 		if err := os.MkdirAll(dir, 0755); err != nil {
@@ -77,7 +74,7 @@ func createProject(name string) {
 	}
 	// 渲染输出main.go
 	var mainConfigMap = map[string]any{
-		"ProjectName": "github.com/eddylee1010/gin-generator",
+		"ProjectName": name,
 	}
 	err := generator.RenderTemplateToFile(generator.MainTemplate, mainConfigMap, "main.go")
 	if err != nil {
@@ -86,7 +83,7 @@ func createProject(name string) {
 	}
 
 	// 2 生成配置文件config.yaml
-	// 2.1自定义配置文件数据
+
 	data := generator.TemplateConfigData{
 		ProjectName: name,
 		Port:        8080,

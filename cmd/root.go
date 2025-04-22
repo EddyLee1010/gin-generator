@@ -3,7 +3,6 @@ package cmd
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/eddylee1010/gin-generator/generator"
 	"github.com/spf13/cobra"
 	"log/slog"
 	"net/http"
@@ -21,12 +20,6 @@ var rootCmd = &cobra.Command{
 var genCmd = &cobra.Command{
 	Use:   "gen",
 	Short: "生成命令 🔑help 获取使用方法",
-	PreRun: func(cmd *cobra.Command, args []string) {
-		err := generator.InitTemplates() // 预先初始化所有模板
-		if err != nil {
-			return
-		}
-	},
 }
 
 // 获取版本号子命令
@@ -75,7 +68,6 @@ func init() {
 	rootCmd.AddCommand(versionCmd)
 
 	if err := rootCmd.Execute(); err != nil {
-		fmt.Println(err)
 		os.Exit(1)
 	}
 }
