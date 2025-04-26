@@ -50,7 +50,7 @@ func generateControllerFiles(projectName string) {
 			ext := filepath.Ext(name)
 			fileName := strings.TrimSuffix(name, ext)
 			data := ExtractControllerTemplateDataFromService(fileName, "comment名称", projectName)
-			generator.RenderTemplateToFile(generator.ControllerTemplate, data, "controller/"+fileName+".go")
+			generator.RenderTemplateToFile(generator.ControllerTemplate, data, "controllers/"+fileName+".go")
 		}
 	}
 

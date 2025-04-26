@@ -68,6 +68,7 @@ func Execute() {
 	rootCmd.AddCommand(versionCmd)
 
 	if err := rootCmd.Execute(); err != nil {
+		slog.Error("", err)
 		os.Exit(1)
 	}
 }

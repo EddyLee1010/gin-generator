@@ -13,7 +13,7 @@ func SnakeToLowerCamel(s string) string {
 			parts[i] = strings.ToUpper(parts[i][:1]) + parts[i][1:]
 		}
 	}
-	return strings.Join(parts, "")
+	return inflection.Singular(strings.Join(parts, ""))
 }
 
 // SnakeToUpperCamel snake命名转大驼峰命名

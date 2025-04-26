@@ -1,6 +1,6 @@
 package templates
 
-const ControllerTmplStr = `package controller
+const ControllerTmplStr = `package controllers
 
 import (
 	"net/http"

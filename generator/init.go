@@ -28,6 +28,7 @@ var (
 	ConfigTemplate     *template.Template
 	ConfigFileTemplate *template.Template
 	ControllerTemplate *template.Template
+	RouterTemplate     *template.Template
 )
 
 // InitTemplates 初始化模板
@@ -68,6 +69,12 @@ func InitTemplates() error {
 
 	// 初始化config.yaml模版
 	ConfigFileTemplate, err = template.New("configyaml").Parse(templates.ConfigFileTemplateStr)
+	if err != nil {
+		return err
+	}
+
+	// 初始化router模版
+	RouterTemplate, err = template.New("router").Parse(templates.RouterTemplateStr)
 	if err != nil {
 		return err
 	}

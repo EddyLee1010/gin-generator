@@ -26,8 +26,8 @@ func main() {
 	dao.Q = dao.Use(db)
 
 	r := gin.Default()
-	r.GET("/", func(c *gin.Context) {
-		c.JSON(200, gin.H{"message": "Hello from gin-generator!"})
-	})
+
+	routers.Init(r)
+
 	r.Run(":" + config.GlobalConfig.Port)
 }`
