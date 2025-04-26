@@ -1,6 +1,6 @@
 package templates
 
-const ServiceTmplStr = `package service
+const ServiceTmplStr = `package services
 
 import (
 	"context"
@@ -8,7 +8,6 @@ import (
 	"{{ .ProjectName }}/dao"
 	"{{ .ProjectName }}/dao/models"
 	"{{ .ProjectName }}/services/internal"
-	"time"
 )
 
 type {{ .StructName }}Service struct {

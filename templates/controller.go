@@ -9,7 +9,6 @@ import (
 	"{{ .ProjectName }}/services"
 )
 
-var {{ .VarName }}Service = services.New{{ .StructName }}Service()
 
 // GetList 查询{{ .Comment }}
 func Get{{ .StructName }}List(c *gin.Context) {
@@ -18,8 +17,8 @@ func Get{{ .StructName }}List(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-
-	list, err := {{ .VarName }}Service.GetList(c.Request.Context(), &req)
+	var {{ .StructName }}Service = services.New{{ .StructName }}Service()
+	list, err := {{ .VarName }}Service.GetList(c, &req)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -35,8 +34,8 @@ func Create{{ .StructName }}(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-
-	if err := {{ .VarName }}Service.Create(c.Request.Context(), &req); err != nil {
+	var {{ .StructName }}Service = services.New{{ .StructName }}Service()
+	if err := {{ .VarName }}Service.Create(c, &req); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
@@ -51,8 +50,8 @@ func Update{{ .StructName }}(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-
-	if err := {{ .VarName }}Service.Update(c.Request.Context(), &req); err != nil {
+	var {{ .StructName }}Service = services.New{{ .StructName }}Service()
+	if err := {{ .VarName }}Service.Update(c, &req); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
@@ -67,8 +66,8 @@ func Delete{{ .StructName }}(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-
-	if err := {{ .VarName }}Service.Delete(c.Request.Context(), &req); err != nil {
+	var {{ .StructName }}Service = services.New{{ .StructName }}Service()
+	if err := {{ .VarName }}Service.Delete(c, &req); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}

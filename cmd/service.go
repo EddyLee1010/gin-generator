@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"github.com/eddylee1010/gin-generator/generator"
+	"github.com/eddylee1010/gin-generator/utils"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"gorm.io/driver/mysql"
@@ -130,7 +131,7 @@ func loadTableInfoByGorm(db *gorm.DB, tableName, modulePath string) (*TableTempl
 
 	var columns []Column
 	var searchable []Column
-	structName := toCamelCase(tableName)
+	structName := utils.TableNameToStructName(tableName)
 
 	for _, col := range columnInfos {
 		goType, isPointer := mysqlTypeToGoType(col.DataType, col.IsNullable)
@@ -142,12 +143,15 @@ func loadTableInfoByGorm(db *gorm.DB, tableName, modulePath string) (*TableTempl
 			IsPrimary:  col.ColumnKey == "PRI",
 			IsPointer:  isPointer,
 		}
-		columns = append(columns, c)
 
 		// 过滤createAt updateAt deleteAt字段
 		if c.TagName == "created_at" || c.TagName == "updated_at" || c.TagName == "deleted_at" {
 			continue
 		}
+		// 填充字段
+		columns = append(columns, c)
+
+		// 填充可搜索字段
 		if !c.IsPrimary {
 			searchable = append(searchable, c)
 		}

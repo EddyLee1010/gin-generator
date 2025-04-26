@@ -20,7 +20,7 @@ import (
 
 type Config struct {
 	AppName string ` + "`yaml:\"app_name\"`" + `
-	Port    int    ` + "`yaml:\"port\"`" + `
+	Port    string    ` + "`yaml:\"port\"`" + `
 	Database struct {
 		Host     string ` + "`yaml:\"host\"`" + `
 		Port     int    ` + "`yaml:\"port\"`" + `
