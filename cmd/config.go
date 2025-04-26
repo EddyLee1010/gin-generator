@@ -52,6 +52,9 @@ output:
   model: ./dao
   controller: ./controller
   router: ./router
+
+slog:
+  level: error #对应slog的日志级别 error、info、debug
 `
 	err := os.WriteFile(fileName, []byte(content), 0644)
 	if err != nil {

@@ -87,7 +87,6 @@ func generateServiceFiles(projectName string) {
 		}
 		// 补充信息
 		info.ProjectName = projectName
-		slog.Debug("", "", info)
 		generator.RenderTemplateToFile(generator.ServiceTemplate, info, "services/"+tableName+".go")
 	}
 	//	4.	转换为模板数据结构
