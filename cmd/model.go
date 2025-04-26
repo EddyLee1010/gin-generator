@@ -2,13 +2,11 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/eddylee1010/gin-generator/generator"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"gorm.io/driver/mysql"
 	"gorm.io/gen"
 	"gorm.io/gorm"
-	"html/template"
 	"log/slog"
 	"os"
 )
@@ -71,25 +69,4 @@ func generateModelsFromConfig() {
 	g.ApplyBasic(g.GenerateAllTable()...)
 	g.Execute()
 	slog.Info("✅ Models generated.")
-
-	// 初始化项目的db,生成Init.go
-	InitDbTemplate, err := template.New("initDb").Parse(`package dao
-
-func InitDb() {
-
-	db, err := gorm.Open(mysql.Open(config.GlobalConfig.Database.User+":"+config.GlobalConfig.Database.Password+"@tcp("+config.GlobalConfig.Database.Host+":"+fmt.Sprintf("%d", config.GlobalConfig.Database.Port)+")/"+config.GlobalConfig.Database.Name+"?charset=utf8mb4&parseTime=True&loc=Local"), &gorm.Config{
-		Logger: logger.Default.LogMode(logger.Info),
-	})
-	if err != nil {
-		fmt.Printf("❌ 数据库连接失败: %v", err)
-	}
-	Use(db) // 初始化全局 Query 变量
-}`)
-	if err != nil {
-		fmt.Println(err)
-	}
-	err = generator.RenderTemplateToFile(InitDbTemplate, nil, "dao/initDb.go")
-	if err != nil {
-		return
-	}
 }

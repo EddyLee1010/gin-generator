@@ -5,6 +5,7 @@ import (
 	"github.com/eddylee1010/gin-generator/generator"
 	"github.com/eddylee1010/gin-generator/utils"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 	"html/template"
 	"io/ioutil"
 	"path/filepath"
@@ -17,15 +18,15 @@ var genRouterCmd = &cobra.Command{
 	PreRunE: func(cmd *cobra.Command, args []string) error {
 		err := generator.InitTemplates()
 
-		//viper.SetConfigFile("gen-config.yaml")
-		//err = viper.ReadInConfig()
-		//if err != nil {
-		//	return err
-		//}
+		viper.SetConfigFile("gen-config.yaml")
+		err = viper.ReadInConfig()
+		if err != nil {
+			return err
+		}
 		return err
 	},
 	Run: func(cmd *cobra.Command, args []string) {
-		generateRouterFiles()
+		generateRouterFiles(viper.GetString("project_name"))
 	},
 	SilenceErrors: true,
 	SilenceUsage:  true,
@@ -35,14 +36,14 @@ func init() {
 	genCmd.AddCommand(genRouterCmd)
 }
 
-func generateRouterFiles() {
+func generateRouterFiles(projectName string) {
 	files, err := ioutil.ReadDir("./controllers")
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
 
-	var data []ControllerInfo
+	var data RouterTmplData
 	for _, file := range files {
 		// 只要文件，不要文件夹
 		if !file.IsDir() {
@@ -54,9 +55,10 @@ func generateRouterFiles() {
 				LowerCamelName: utils.SnakeToLowerCamel(fileName),
 				UpperCamelName: utils.TableNameToStructName(fileName),
 			}
-			data = append(data, i)
+			data.Controllers = append(data.Controllers, i)
 		}
 	}
+	data.ProjectName = projectName
 	generator.RenderTemplateToFile(generator.RouterTemplate, data, "routers/auto.go")
 
 	// 生成自定义的router文件
@@ -83,4 +85,9 @@ func Init(r *gin.Engine) {
 type ControllerInfo struct {
 	LowerCamelName string // 小驼峰名
 	UpperCamelName string // 大驼峰名
+}
+
+type RouterTmplData struct {
+	ProjectName string
+	Controllers []ControllerInfo
 }

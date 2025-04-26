@@ -17,5 +17,5 @@ database:
   port: {{.Database.DBPort}}
   user: {{.Database.DBUser}}
   password: {{.Database.DBPassword}}
-  name: {{.Database.DBName}}
+  dbname: {{.Database.DBName}}
 `

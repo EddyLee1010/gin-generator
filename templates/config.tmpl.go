@@ -17,16 +17,16 @@ import (
 	"github.com/spf13/viper"
 	"log/slog"
 )
-
+var GlobalConfig Config
 type Config struct {
 	AppName string ` + "`yaml:\"app_name\"`" + `
 	Port    string    ` + "`yaml:\"port\"`" + `
 	Database struct {
 		Host     string ` + "`yaml:\"host\"`" + `
-		Port     int    ` + "`yaml:\"port\"`" + `
+		Port     string    ` + "`yaml:\"port\"`" + `
 		User     string ` + "`yaml:\"user\"`" + `
 		Password string ` + "`yaml:\"password\"`" + `
-		Name     string ` + "`yaml:\"name\"`" + `
+		Dbname     string ` + "`yaml:\"dbname\"`" + `
 	} ` + "`yaml:\"database\"`" + `
 }
 
@@ -37,8 +37,7 @@ func LoadConfig(yamlFile string) error{
 		slog.Error("❌ Failed to read config:", err)
 		return err
 	}
-	var config Config
-	if err = viper.Unmarshal(&config); err != nil {
+	if err = viper.Unmarshal(&GlobalConfig); err != nil {
 		slog.Error("❌ 解析配置到结构体错误","key", err.Error())
 		return err
 	}
