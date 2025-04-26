@@ -1,7 +1,7 @@
 package main
 
 import (
-	_ "github.com/eddylee1010/gin-generator/cmd"
+	"github.com/eddylee1010/gin-generator/cmd"
 	"github.com/eddylee1010/gin-generator/logger"
 	"log/slog"
 )
@@ -27,11 +27,10 @@ func main() {
 	//	log.Fatalf("failed to render template: %v", err)
 	//}
 
-	//cmd.Execute()
-
 	// 初始化日志系统
 	logger.Init(logger.Config{
 		Level:  slog.LevelDebug, // 输出 Debug 及以上日志
 		Format: "text",          // 或 "json"
 	})
+	cmd.Execute()
 }

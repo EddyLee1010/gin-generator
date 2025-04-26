@@ -5,6 +5,7 @@ import (
 	"html/template"
 	"log/slog"
 	"os"
+	"path/filepath"
 )
 
 // TemplateConfigData 模板配置结构体，cli使用。不是用户项目数据
@@ -21,34 +22,52 @@ type TemplateConfigData struct {
 }
 
 var (
-	RequestServiceTemplate *template.Template
-	DTOTemplate            *template.Template
-	MainTemplate           *template.Template // main.go模版
-	ConfigTemplate         *template.Template
-	ConfigFileTemplate     *template.Template
+	ServiceTemplate    *template.Template
+	DTOTemplate        *template.Template
+	MainTemplate       *template.Template // main.go模版
+	ConfigTemplate     *template.Template
+	ConfigFileTemplate *template.Template
+	ControllerTemplate *template.Template
 )
 
 // InitTemplates 初始化模板
 func InitTemplates() error {
 	var err error
-	//RequestServiceTemplate, err = LoadTemplate("templates/service.tmpl")
-	//if err != nil {
-	//	return err
-	//}
-	//DTOTemplate, err = LoadTemplate("templates/dto.tmpl")
-	//if err != nil {
-	//	return err
-	//}
+
+	// 初始化service模版
+	ServiceTemplate, err = template.New("service").Parse(templates.ServiceTmplStr)
+	if err != nil {
+		slog.Error("Failed to Parse template", "error", err)
+		return err
+	}
+	// 初始化dto
+	DTOTemplate, err = template.New("dto").Parse(templates.DtoTmplStr)
+	if err != nil {
+		return err
+	}
+
+	// 初始化controller模版
+	ControllerTemplate, err = template.New("controller").Parse(templates.ControllerTmplStr)
+	if err != nil {
+		slog.Error("Failed to Parse template", "error", err)
+		return err
+	}
+
+	// 初始化main模版
 	MainTemplate, err = template.New("main").Parse(templates.MainTmplStr)
 	if err != nil {
 		slog.Error("Failed to Parse template", "error", err)
 		return err
 	}
+
+	// 初始化config模版
 	ConfigTemplate, err = template.New("config").Parse(templates.ConfigTemplateStr)
 	if err != nil {
 		return err
 	}
-	ConfigFileTemplate, err = template.New("config.yaml").Parse(templates.ConfigFileTemplateStr)
+
+	// 初始化config.yaml模版
+	ConfigFileTemplate, err = template.New("configyaml").Parse(templates.ConfigFileTemplateStr)
 	if err != nil {
 		return err
 	}
@@ -60,6 +79,7 @@ func InitTemplates() error {
 // data: 模板数据
 // outPath: 输出文件路径
 func RenderTemplateToFile(tmpl *template.Template, data any, outPath string) error {
+	os.MkdirAll(filepath.Dir(outPath), os.ModePerm)
 	file, err := os.Create(outPath)
 	if err != nil {
 		return err

@@ -63,7 +63,7 @@ func getLatestRelease(owner, repo string) (GitHubRelease, error) {
 	}
 	return release, nil
 }
-func init() {
+func Execute() {
 	rootCmd.AddCommand(genCmd) // 添加gen子命令
 	rootCmd.AddCommand(versionCmd)
 
